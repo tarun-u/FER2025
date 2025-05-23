@@ -14,8 +14,8 @@ from scipy.stats         import norm
 from scipy.optimize      import brentq
 
 # ─── User parameters ──────────────────────────────────────────────────
-STRIKE        = 625
-ML_THRESHOLD  = 0.50
+STRIKE        = 620
+ML_THRESHOLD  = 0.9
 MAX_TRADES    = 100
 COOLDOWN_MIN  = 10
 MAKE_PLOT     = True
