@@ -22,7 +22,7 @@ option_type   = "call"
 r             = 0.06                       # annual risk-free rate
 expiry_date   = pd.Timestamp("2025-04-17")
 contract_size = 1                          # 1 → $ per option
-gamma_thresh  = 0.004                      # Γ threshold
+gamma_thresh  = 0.003                     # Γ threshold
 
 # -------------------- Black–Scholes helpers ---------------------
 def black_scholes_d1(S, K, T, r, sigma):
