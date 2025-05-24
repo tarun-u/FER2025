@@ -83,7 +83,7 @@ def load_pair(call_tbl, put_tbl, strike):
     df["speed"]      = df.S_last.pct_change()
     return df.fillna(0.0)
 
-def label_rows(df):
+def label_rows(df): # marks the data for when a signal was hit with a 1, 0 otherwise
     y = np.zeros(len(df),dtype=int)
     last = df.V_time.iat[0]-timedelta(minutes=COOLDOWN_MIN+1)
     for i,r in df.iterrows():
