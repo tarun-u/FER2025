@@ -14,11 +14,8 @@ from scipy.stats         import norm
 from scipy.optimize      import brentq
 
 # ─── User parameters ──────────────────────────────────────────────────
-<<<<<<< HEAD
-STRIKE        = 680
-=======
-STRIKE        = 600
->>>>>>> c1442665569a4fd48d91f7cddaf5c66a90dd321e
+
+STRIKE        = 660
 ML_THRESHOLD  = 0.9
 MAX_TRADES    = 100
 COOLDOWN_MIN  = 10
@@ -86,7 +83,7 @@ df["strike"]     = STRIKE
 
 # ─── Option P&L (short straddle: sell @ bid, buy back @ ask) ──────────
 openC, openP = df.bid_C.iat[0], df.bid_P.iat[0]
-df["pnl_opt"] = (openC-df.ask_C)+(openP-df.ask_P)
+df["pnl_opt"] = ((openC-df.ask_C)+(openP-df.ask_P)) * 100
 
 # ─── Live simulation ─────────────────────────────────────────────────
 cash, stk_pos = 0.0, 0.0
@@ -109,7 +106,7 @@ for _, row in df.iterrows():
 
     cool_ok = (row.V_time-last_trade) >= timedelta(minutes=COOLDOWN_MIN)
     if prob>=ML_THRESHOLD and cool_ok and trades<MAX_TRADES:
-        target = 0.8*row.delta_port
+        target = 0.8*row.delta_port * 100
         d_pos  = target - stk_pos
         cash  -= d_pos * row.S_last
         stk_pos = target
@@ -126,13 +123,16 @@ for _, row in df.iterrows():
     hedge_val = cash + stk_pos * row.S_last
     pnl_series.append(row.pnl_opt + hedge_val)
 
+
 df["pnl_hedged"] = pnl_series
+
+
 
 # ─── Summary ─────────────────────────────────────────────────────────
 print("\n=== ML-driven hedge summary ===")
 print(f"Trades executed          : {trades}/{MAX_TRADES}")
-print(f"Final naked   P&L ($/str): {df.pnl_opt.iat[-1]*100: .2f}")
-print(f"Final hedged  P&L ($/str): {df.pnl_hedged.iat[-1]*100: .2f}")
+print(f"Final naked   P&L ($/str): {df.pnl_opt.iat[-1]: .2f}")
+print(f"Final hedged  P&L ($/str): {df.pnl_hedged.iat[-1]: .2f}")
 print("================================================\n")
 
 # ─── Plot ─────────────────────────────────────────────────────────────
@@ -159,7 +159,7 @@ if MAKE_PLOT:
     ax.grid(axis="y", ls="--", alpha=0.4)
     ax.grid(axis="x", ls=":",  alpha=0.3)
     ax.set_title(f"NVDA {STRIKE} straddle — ML-directed Δ-hedge")
-    ax.set_ylabel("P&L per straddle ($)")
+    ax.set_ylabel("P&L Total ($)")
     ax.legend(loc="upper left")
 
     fig.tight_layout()
