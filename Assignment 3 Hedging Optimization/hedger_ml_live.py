@@ -15,7 +15,7 @@ from scipy.optimize      import brentq
 
 # ─── User parameters ──────────────────────────────────────────────────
 
-STRIKE        = 660
+STRIKE        = 600
 ML_THRESHOLD  = 0.9
 MAX_TRADES    = 100
 COOLDOWN_MIN  = 10

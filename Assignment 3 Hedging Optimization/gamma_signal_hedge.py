@@ -27,7 +27,7 @@ from scipy.optimize import brentq
 # ────────────────────────────────────────────────────────────────
 # Parameters
 # ────────────────────────────────────────────────────────────────
-strike = 600                              # common strike for call & put
+strike = 590                              # common strike for call & put
 
 DB_PATH_C = Path("META_call.db")
 DB_PATH_P  = Path("META_put.db")
@@ -219,6 +219,16 @@ df = run_gamma_aware_delta_hedge(df, eps_delta=EPS_DELTA, eps_gamma=EPS_GAMMA)
 # -------------- insert these two lines just below the call --------------
 pct_hedged = (df.target_shares != 0).mean() * 100        # % of ticks hedged
 # ------------------------------------------------------------------------
+buy_ts, buy_pnl = [], []
+sell_ts, sell_pnl = [], []
+
+for i, row in df.iterrows():
+    if row.trade_qty > 0:  # Buy stock to increase hedge
+        buy_ts.append(row.V_time)
+        buy_pnl.append(row.pnl_gamma_total)
+    elif row.trade_qty < 0:  # Sell stock to reduce hedge
+        sell_ts.append(row.V_time)
+        sell_pnl.append(row.pnl_gamma_total)
 # ────────────────────────────────────────────────────────────────
 # Console summary
 # ────────────────────────────────────────────────────────────────
@@ -266,6 +276,11 @@ ax.legend(loc="upper left")
 ax2.legend(loc="upper right", frameon=False)
 
 fig.tight_layout()
+# Plot trade markers
+ax.scatter(buy_ts, buy_pnl,  marker="^", color="green", zorder=6,
+           label="Buy hedge (increase long)")
+ax.scatter(sell_ts, sell_pnl, marker="v", color="red", zorder=6,
+           label="Sell hedge (increase short)")
 fig.savefig("straddle_hedge_comparison.png", dpi=300)
 plt.show()
 
