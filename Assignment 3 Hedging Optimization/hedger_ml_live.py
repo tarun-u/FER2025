@@ -14,7 +14,11 @@ from scipy.stats         import norm
 from scipy.optimize      import brentq
 
 # ─── User parameters ──────────────────────────────────────────────────
+<<<<<<< HEAD
 STRIKE        = 680
+=======
+STRIKE        = 600
+>>>>>>> c1442665569a4fd48d91f7cddaf5c66a90dd321e
 ML_THRESHOLD  = 0.9
 MAX_TRADES    = 100
 COOLDOWN_MIN  = 10
@@ -68,10 +72,8 @@ df["tau"]        = (EXPIRY - df["trade_date"]).dt.days/252
 df = df[df.tau>0].reset_index(drop=True)
 
 # ─── Greeks & feature columns ─────────────────────────────────────────
-df["iv_C"] = df.apply(lambda r: iv_brent(r.S_last,STRIKE,r.tau,RISK_FREE,
-                                         r.ask_C,"call"), axis=1)
-df["iv_P"] = df.apply(lambda r: iv_brent(r.S_last,STRIKE,r.tau,RISK_FREE,
-                                         r.ask_P,"put"),  axis=1)
+df["iv_C"] = df.apply(lambda r: iv_brent(r.S_last,STRIKE,r.tau,RISK_FREE,r.ask_C,"call"), axis=1)
+df["iv_P"] = df.apply(lambda r: iv_brent(r.S_last,STRIKE,r.tau,RISK_FREE,r.ask_P,"put"),  axis=1)
 d1C = bs_d1(df.S_last,STRIKE,df.tau,RISK_FREE,df.iv_C)
 d1P = bs_d1(df.S_last,STRIKE,df.tau,RISK_FREE,df.iv_P)
 
